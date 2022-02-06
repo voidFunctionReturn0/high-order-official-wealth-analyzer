@@ -9,7 +9,7 @@ app = FastAPI()
 @app.get("/")
 async def root():
     # csv to df
-    df = pd.read_csv('./res/csv/government-2022-01-en-head.csv',
+    df = pd.read_csv('./res/csv/goverment-2022-01-en-head.csv',
         encoding = 'utf-8')
 
 
