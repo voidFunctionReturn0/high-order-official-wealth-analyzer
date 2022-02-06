@@ -16,7 +16,7 @@ async def root():
     # csv -> postgres
     engine = create_engine(SQLALCHEMY_DATABASE_URL)
     df.to_sql('asset', con = engine, if_exists='append')
-    print(engine.execute("SELECT * FROM asset").fetchone())
+    # print(engine.execute("SELECT * FROM asset").fetchone())
 
 
-    return {"data": "data"}
+    return {"data": engine.execute("SELECT * FROM asset").fetchone()}
