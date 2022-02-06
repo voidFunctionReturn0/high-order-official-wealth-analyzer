@@ -19,4 +19,4 @@ async def root():
     # print(engine.execute("SELECT * FROM asset").fetchone())
 
 
-    return {"data": engine.execute("SELECT * FROM asset").fetchone()}
+    return {"data": "1"}
