@@ -16,7 +16,6 @@ df = pd.read_csv(
 # df -> postgres
 Engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
-
 df.to_sql(
     name = 'assets',
     con = Engine,
@@ -42,6 +41,5 @@ SessionLocal = sessionmaker(
     autocommit = False,
     autoflush = False,
     bind = Engine)
-
 
 Base = declarative_base()
