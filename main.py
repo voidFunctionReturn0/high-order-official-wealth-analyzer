@@ -1,16 +1,22 @@
 from fastapi import FastAPI
 import pandas as pd
+from sqlalchemy import create_engine
+from res.contants import SQLALCHEMY_DATABASE_URL
+import logging
 
 app = FastAPI()
 
 @app.get("/")
 async def root():
     # csv to df
-    data = pd.read_csv('./res/csv/government-2022-01-en-head.csv',
+    df = pd.read_csv('./res/csv/government-2022-01-en-head.csv',
         encoding = 'utf-8')
-    
-    is_securities = data['main-type'] == '증권'
-    securities = data[is_securities]
-    print(securities)
+
+
+    # csv -> postgres
+    engine = create_engine(SQLALCHEMY_DATABASE_URL)
+    df.to_sql('asset', con = engine, if_exists='append')
+    # print(engine.execute("SELECT * FROM asset").fetchall())
+
 
     return {"data": "data"}
