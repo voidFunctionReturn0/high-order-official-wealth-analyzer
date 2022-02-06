@@ -1,22 +1,35 @@
-from fastapi import FastAPI
-import pandas as pd
-from sqlalchemy import create_engine
-from res.contants import SQLALCHEMY_DATABASE_URL
-import logging
+from fastapi import Depends, FastAPI
+from modules import db, db_crud
+from modules.db import SessionLocal
+from sqlalchemy.orm import Session
 
 app = FastAPI()
 
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+'''
+@app.on_event("startup")
+async def startup_event():
+    db.init_db(Depends(get_db))
+'''
+
+@app.on_event("shutdown")
+def shutdown_event():
+    with open("log.txt", mode="a") as log:
+        log.write("Application shutdown\n")
+
+
 @app.get("/")
 async def root():
-    # csv to df
-    df = pd.read_csv('./res/csv/goverment-2022-01-en-head.csv',
-        encoding = 'utf-8')
+    return {"request": "success"}
 
 
-    # csv -> postgres
-    engine = create_engine(SQLALCHEMY_DATABASE_URL)
-    df.to_sql('asset', con = engine, if_exists='append')
-    # print(engine.execute("SELECT * FROM asset").fetchone())
-
-
-    return {"data": "1"}
+@app.get("/official/{idx}")
+async def official(idx: int, db: Session = Depends(get_db)):
+    return {"request": db_crud.get_asset(db=db, idx=idx)}
